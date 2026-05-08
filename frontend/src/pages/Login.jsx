@@ -14,7 +14,7 @@ function Login() {
         try {
 
             const res = await axios.post(
-                "https://dynamic-amazement-production-132f.up.railway.app/api/auth/login",
+                "https://feisty-mindfulness-production.up.railway.app/api/auth/login",
                 {
                     email,
                     password
