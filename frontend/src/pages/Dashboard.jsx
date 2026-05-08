@@ -32,7 +32,7 @@ function Dashboard() {
         try {
 
             const res = await axios.get(
-                "http://localhost:5000/api/tasks"
+                "http://dynamic-amazement-production-132f.up.railway.app/api/tasks"
             );
 
             setTasks(res.data);
