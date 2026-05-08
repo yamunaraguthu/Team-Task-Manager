@@ -1,52 +1,34 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+require("dotenv").config();
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// ====================== SAFE ROUTES ======================
-try {
-    const authRoutes = require("./routes/authRoutes");
-    const projectRoutes = require("./routes/projectRoutes");
-    const taskRoutes = require("./routes/taskRoutes");
-
-    app.use("/api/auth", authRoutes);
-    app.use("/api/projects", projectRoutes);
-    app.use("/api/tasks", taskRoutes);
-    console.log("✅ All routes loaded successfully");
-} catch (err) {
-    console.error("❌ Route Error:", err.message);
-}
-
-// Home Route
+// === PURE TEST - NO ROUTES ===
 app.get("/", (req, res) => {
-    res.json({ message: "Backend Connected Successfully 🚀" });
+    res.json({ 
+        message: "✅ Test Successful! Backend Working on Railway",
+        port: process.env.PORT,
+        time: new Date().toISOString()
+    });
 });
 
-// ====================== PORT FIX ======================
-const PORT = process.env.PORT || 8080;
+console.log("🚀 Test Mode Activated - Routes Disabled");
 
-console.log("Railway PORT:", process.env.PORT);
-console.log("Using PORT:", PORT);
+// PORT
+const PORT = process.env.PORT || 8080;
+console.log(`Railway gave PORT: ${process.env.PORT}`);
+console.log(`Server will run on: ${PORT}`);
 
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`✅ Server is LIVE on port ${PORT}`);
+    console.log(`✅ Server LIVE on port ${PORT}`);
 });
 
-// ====================== MONGO ======================
+// MongoDB
 mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log("✅ MongoDB Connected Successfully"))
+    .then(() => console.log("✅ MongoDB Connected"))
     .catch(err => console.error("❌ MongoDB Error:", err.message));
-
-// Prevent crash from unhandled errors
-process.on('unhandledRejection', (err) => {
-    console.error("❌ Unhandled Rejection:", err);
-});
-
-process.on('uncaughtException', (err) => {
-    console.error("❌ Uncaught Exception:", err);
-});
