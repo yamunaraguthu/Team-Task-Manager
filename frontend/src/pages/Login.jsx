@@ -4,68 +4,74 @@ import { useNavigate } from "react-router-dom";
 
 function Login() {
 
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
-  const loginUser = async () => {
+    const loginUser = async () => {
 
-    try {
+        try {
 
-      const res = await axios.post(
-        "http://dynamic-amazement-production-132f.up.railway.app/api/auth/login",
-        {
-          email,
-          password
+            const res = await axios.post(
+                "https://dynamic-amazement-production-132f.up.railway.app/api/auth/login",
+                {
+                    email,
+                    password
+                }
+            );
+
+            alert(res.data.message);
+
+            // SAVE TOKEN
+            localStorage.setItem(
+                "token",
+                res.data.token
+            );
+
+            console.log(res.data.token);
+
+            navigate("/dashboard");
+
+        } catch (err) {
+
+            alert("Login Failed");
+
+            console.log(err);
+
         }
-      );
 
-      alert(res.data.message);
+    };
 
-      console.log(res.data.token);
+    return (
 
-      navigate("/dashboard");
+        <div style={{ padding: "40px" }}>
 
-    } catch (err) {
+            <h1>Login Page 🔐</h1>
 
-      alert("Login Failed");
+            <input
+                type="email"
+                placeholder="Enter Email"
+                onChange={(e) => setEmail(e.target.value)}
+            />
 
-      console.log(err);
+            <br /><br />
 
-    }
+            <input
+                type="password"
+                placeholder="Enter Password"
+                onChange={(e) => setPassword(e.target.value)}
+            />
 
-  };
+            <br /><br />
 
-  return (
+            <button onClick={loginUser}>
+                Login
+            </button>
 
-    <div style={{ padding: "40px" }}>
+        </div>
 
-      <h1>Login Page 🔐</h1>
-
-      <input
-        type="email"
-        placeholder="Enter Email"
-        onChange={(e) => setEmail(e.target.value)}
-      />
-
-      <br /><br />
-
-      <input
-        type="password"
-        placeholder="Enter Password"
-        onChange={(e) => setPassword(e.target.value)}
-      />
-
-      <br /><br />
-
-      <button onClick={loginUser}>
-        Login
-      </button>
-
-    </div>
-
-  );
+    );
 
 }
 
