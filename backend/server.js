@@ -6,32 +6,31 @@ require("dotenv").config();
 
 const app = express();
 
+
+// ROUTES
 const projectRoutes = require("./routes/projectRoutes");
-const authMiddleware = require("./middleware/authMiddleware");
+const authRoutes = require("./routes/authRoutes");
+const taskRoutes = require("./routes/taskRoutes");
 
 
-// Middleware
-app.use(cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true
-}));
+// MIDDLEWARE
+app.use(cors());
 
 app.use(express.json());
 
 
-// MongoDB Connection
+// MONGODB CONNECTION
 mongoose.connect(process.env.MONGO_URI)
 .then(() => {
-    console.log("MongoDB Connected");
+    console.log("MongoDB Connected Successfully");
 })
-.catch((err) => {
-    console.log(err);
+.catch((error) => {
+    console.log("MongoDB Connection Error:", error);
 });
 
 
 // AUTH ROUTES
-app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/auth", authRoutes);
 
 
 // PROJECT ROUTES
@@ -39,7 +38,7 @@ app.use("/api/projects", projectRoutes);
 
 
 // TASK ROUTES
-app.use("/api/tasks", require("./routes/taskRoutes"));
+app.use("/api/tasks", taskRoutes);
 
 
 // HOME ROUTE
@@ -47,17 +46,6 @@ app.get("/", (req, res) => {
 
     res.json({
         message: "Backend Connected Successfully 🚀"
-    });
-
-});
-
-
-// PROTECTED ROUTE
-app.get("/protected", authMiddleware, (req, res) => {
-
-    res.json({
-        message: "Protected Route Accessed",
-        user: req.user
     });
 
 });
