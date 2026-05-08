@@ -6,22 +6,12 @@ const router = express.Router();
 
 const User = require("../models/User");
 
-
 // SIGNUP ROUTE
 router.post("/signup", async (req, res) => {
 
     try {
 
         const { name, email, password, role } = req.body;
-
-        // check existing user
-        const existingUser = await User.findOne({ email });
-
-        if (existingUser) {
-            return res.status(400).json({
-                message: "User already exists"
-            });
-        }
 
         // hash password
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -52,7 +42,6 @@ router.post("/signup", async (req, res) => {
 
 });
 
-
 // LOGIN ROUTE
 router.post("/login", async (req, res) => {
 
@@ -70,7 +59,10 @@ router.post("/login", async (req, res) => {
         }
 
         // compare password
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = await bcrypt.compare(
+            password,
+            user.password
+        );
 
         if (!isMatch) {
             return res.status(400).json({
@@ -106,6 +98,5 @@ router.post("/login", async (req, res) => {
     }
 
 });
-
 
 module.exports = router;
