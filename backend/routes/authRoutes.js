@@ -6,6 +6,7 @@ const router = express.Router();
 
 const User = require("../models/User");
 
+
 // SIGNUP ROUTE
 router.post("/signup", async (req, res) => {
 
@@ -13,10 +14,19 @@ router.post("/signup", async (req, res) => {
 
         const { name, email, password, role } = req.body;
 
+        // simple validation
+        if (!name || !email || !password) {
+
+            return res.status(400).json({
+                message: "All fields are required"
+            });
+
+        }
+
         // hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // create new user
+        // create user
         const newUser = new User({
             name,
             email,
@@ -24,6 +34,7 @@ router.post("/signup", async (req, res) => {
             role
         });
 
+        // save user
         await newUser.save();
 
         res.status(201).json({
@@ -42,6 +53,7 @@ router.post("/signup", async (req, res) => {
 
 });
 
+
 // LOGIN ROUTE
 router.post("/login", async (req, res) => {
 
@@ -49,28 +61,29 @@ router.post("/login", async (req, res) => {
 
         const { email, password } = req.body;
 
-        // check user
         const user = await User.findOne({ email });
 
         if (!user) {
+
             return res.status(400).json({
                 message: "User not found"
             });
+
         }
 
-        // compare password
         const isMatch = await bcrypt.compare(
             password,
             user.password
         );
 
         if (!isMatch) {
+
             return res.status(400).json({
                 message: "Invalid password"
             });
+
         }
 
-        // create token
         const token = jwt.sign(
             {
                 id: user._id,
