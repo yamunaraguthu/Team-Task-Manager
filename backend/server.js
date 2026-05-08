@@ -5,33 +5,35 @@ require("dotenv").config();
 
 const app = express();
 
-// MIDDLEWARE
 app.use(cors());
 app.use(express.json());
 
-// ROUTES - Move this AFTER middleware (already correct, but good practice)
-const projectRoutes = require("./routes/projectRoutes");
-const authRoutes = require("./routes/authRoutes");
-const taskRoutes = require("./routes/taskRoutes");
+// Safe Route Loading
+try {
+    const authRoutes = require("./routes/authRoutes");
+    const projectRoutes = require("./routes/projectRoutes");
+    const taskRoutes = require("./routes/taskRoutes");
 
-app.use("/api/auth", authRoutes);
-app.use("/api/projects", projectRoutes);
-app.use("/api/tasks", taskRoutes);
+    app.use("/api/auth", authRoutes);
+    app.use("/api/projects", projectRoutes);
+    app.use("/api/tasks", taskRoutes);
+    console.log("✅ All routes loaded successfully");
+} catch (err) {
+    console.error("❌ ERROR LOADING ROUTES:", err.message);
+}
 
-// HOME ROUTE
+// Home Route
 app.get("/", (req, res) => {
     res.json({ message: "Backend Connected Successfully 🚀" });
 });
 
-// ====================== FIXED PORT ======================
+// Port
 const PORT = process.env.PORT || 8080;
-
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`✅ Server running on port ${PORT}`);
 });
-// =======================================================
 
-// MONGODB CONNECTION (keep at bottom)
+// MongoDB
 mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log("MongoDB Connected Successfully"))
-    .catch((error) => console.log("MongoDB Connection Error:", error));
+    .then(() => console.log("✅ MongoDB Connected Successfully"))
+    .catch(err => console.error("❌ MongoDB Error:", err.message));
