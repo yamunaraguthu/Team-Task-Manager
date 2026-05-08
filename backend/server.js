@@ -9,7 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ROUTES
+// ROUTES - Move this AFTER middleware (already correct, but good practice)
 const projectRoutes = require("./routes/projectRoutes");
 const authRoutes = require("./routes/authRoutes");
 const taskRoutes = require("./routes/taskRoutes");
@@ -31,7 +31,7 @@ app.listen(PORT, '0.0.0.0', () => {
 });
 // =======================================================
 
-// MONGODB CONNECTION
+// MONGODB CONNECTION (keep at bottom)
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log("MongoDB Connected Successfully"))
     .catch((error) => console.log("MongoDB Connection Error:", error));
