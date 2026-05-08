@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Routes with error handling
+// ====================== SAFE ROUTES ======================
 try {
     const authRoutes = require("./routes/authRoutes");
     const projectRoutes = require("./routes/projectRoutes");
@@ -27,16 +27,26 @@ app.get("/", (req, res) => {
     res.json({ message: "Backend Connected Successfully 🚀" });
 });
 
-// ====================== CRITICAL PORT FIX ======================
+// ====================== PORT FIX ======================
 const PORT = process.env.PORT || 8080;
-console.log(`Using port: ${PORT}`);   // ← Add this line for debug
+
+console.log("Railway PORT:", process.env.PORT);
+console.log("Using PORT:", PORT);
 
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`✅ Server running on port ${PORT}`);
+    console.log(`✅ Server is LIVE on port ${PORT}`);
 });
-// ============================================================
 
-// MongoDB
+// ====================== MONGO ======================
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log("✅ MongoDB Connected Successfully"))
     .catch(err => console.error("❌ MongoDB Error:", err.message));
+
+// Prevent crash from unhandled errors
+process.on('unhandledRejection', (err) => {
+    console.error("❌ Unhandled Rejection:", err);
+});
+
+process.on('uncaughtException', (err) => {
+    console.error("❌ Uncaught Exception:", err);
+});
