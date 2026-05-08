@@ -9,12 +9,24 @@ const app = express();
 const projectRoutes = require("./routes/projectRoutes");
 const authMiddleware = require("./middleware/authMiddleware");
 
-app.use(cors());
+
+// CORS
+app.use(cors({
+    origin: "*"
+}));
+
+
 app.use(express.json());
 
+
+// MongoDB Connection
 mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log("MongoDB Connected"))
-.catch((err) => console.log(err));
+.then(() => {
+    console.log("MongoDB Connected");
+})
+.catch((err) => {
+    console.log(err);
+});
 
 
 // AUTH ROUTES
@@ -48,8 +60,11 @@ app.get("/protected", authMiddleware, (req, res) => {
 });
 
 
-const PORT = process.env.PORT||8080;
+// PORT
+const PORT = process.env.PORT || 8080;
 
+
+// SERVER
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
