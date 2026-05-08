@@ -1,14 +1,14 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-require("dotenv").config();
 
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Safe Route Loading
+// Routes with error handling
 try {
     const authRoutes = require("./routes/authRoutes");
     const projectRoutes = require("./routes/projectRoutes");
@@ -19,7 +19,7 @@ try {
     app.use("/api/tasks", taskRoutes);
     console.log("✅ All routes loaded successfully");
 } catch (err) {
-    console.error("❌ ERROR LOADING ROUTES:", err.message);
+    console.error("❌ Route Error:", err.message);
 }
 
 // Home Route
@@ -27,11 +27,14 @@ app.get("/", (req, res) => {
     res.json({ message: "Backend Connected Successfully 🚀" });
 });
 
-// Port
+// ====================== CRITICAL PORT FIX ======================
 const PORT = process.env.PORT || 8080;
+console.log(`Using port: ${PORT}`);   // ← Add this line for debug
+
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`✅ Server running on port ${PORT}`);
 });
+// ============================================================
 
 // MongoDB
 mongoose.connect(process.env.MONGO_URI)
