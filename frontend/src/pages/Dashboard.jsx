@@ -32,7 +32,7 @@ function Dashboard() {
         try {
 
             const res = await axios.get(
-                "http://dynamic-amazement-production-132f.up.railway.app/api/tasks"
+                "https://dynamic-amazement-production-132f.up.railway.app/api/tasks"
             );
 
             setTasks(res.data);
@@ -63,7 +63,7 @@ function Dashboard() {
         try {
 
             await axios.post(
-                "http://localhost:5000/api/tasks/create",
+                "https://dynamic-amazement-production-132f.up.railway.app/api/tasks/create",
                 {
                     title,
                     projectName,
@@ -92,7 +92,7 @@ function Dashboard() {
         try {
 
             await axios.delete(
-                `http://localhost:5000/api/tasks/delete/${id}`
+                `https://dynamic-amazement-production-132f.up.railway.app/api/tasks/delete/${id}`
             );
 
             fetchTasks();
@@ -200,7 +200,7 @@ function Dashboard() {
                             try {
 
                                 await axios.put(
-                                    `http://localhost:5000/api/tasks/update/${item._id}`,
+                                    `https://dynamic-amazement-production-132f.up.railway.app/api/tasks/update/${item._id}`,
                                     {
                                         status: e.target.value
                                     }
