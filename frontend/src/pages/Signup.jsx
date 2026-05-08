@@ -16,7 +16,7 @@ function Signup() {
         try {
 
             const res = await axios.post(
-                "http://dynamic-amazement-production-132f.up.railway.app/api/auth/signup",
+                "https://dynamic-amazement-production-132f.up.railway.app/api/auth/signup",
                 {
                     name,
                     email,
