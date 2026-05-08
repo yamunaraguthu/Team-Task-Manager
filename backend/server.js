@@ -1,34 +1,55 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+
 require("dotenv").config();
 
 const app = express();
 
+const projectRoutes = require("./routes/projectRoutes");
+const authMiddleware = require("./middleware/authMiddleware");
+
 app.use(cors());
 app.use(express.json());
 
-// === PURE TEST - NO ROUTES ===
+mongoose.connect(process.env.MONGO_URI)
+.then(() => console.log("MongoDB Connected"))
+.catch((err) => console.log(err));
+
+
+// AUTH ROUTES
+app.use("/api/auth", require("./routes/authRoutes"));
+
+
+// PROJECT ROUTES
+app.use("/api/projects", projectRoutes);
+
+
+// TASK ROUTES
+app.use("/api/tasks", require("./routes/taskRoutes"));
+
+
+// HOME ROUTE
 app.get("/", (req, res) => {
-    res.json({ 
-        message: "✅ Test Successful! Backend Working on Railway",
-        port: process.env.PORT,
-        time: new Date().toISOString()
+    res.json({
+        message: "Backend Connected Successfully 🚀"
     });
 });
 
-console.log("🚀 Test Mode Activated - Routes Disabled");
 
-// PORT
-const PORT = process.env.PORT || 8080;
-console.log(`Railway gave PORT: ${process.env.PORT}`);
-console.log(`Server will run on: ${PORT}`);
+// PROTECTED ROUTE
+app.get("/protected", authMiddleware, (req, res) => {
 
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`✅ Server LIVE on port ${PORT}`);
+    res.json({
+        message: "Protected Route Accessed",
+        user: req.user
+    });
+
 });
 
-// MongoDB
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log("✅ MongoDB Connected"))
-    .catch(err => console.error("❌ MongoDB Error:", err.message));
+
+const PORT = process.env.PORT||8080;
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
