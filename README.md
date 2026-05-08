@@ -78,17 +78,27 @@ Admins can manage tasks and projects, while Members can track and update task pr
 Team-Task-Manager
 │
 ├── frontend
+
 │   ├── src
+
 │   ├── public
+
 │   ├── package.json
 │
+
 ├── backend
+
 │   ├── models
+
 │   ├── routes
+
 │   ├── middleware
+
 │   ├── server.js
+
 │   ├── package.json
 │
+
 ├── README.md
 
 ---
