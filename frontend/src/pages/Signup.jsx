@@ -31,9 +31,11 @@ function Signup() {
 
         } catch (error) {
 
-            console.log(error);
+            console.log(error.response);
 
-            alert("Registration Failed");
+            alert(
+                error.response?.data?.message || "Registration Failed"
+            );
 
         }
 
