@@ -9,7 +9,7 @@ const projectRoutes = require("./routes/projectRoutes");
 const authMiddleware = require("./middleware/authMiddleware");
 
 
-// MANUAL CORS FIX
+// ================= MANUAL CORS FIX =================
 app.use((req, res, next) => {
 
     res.header(
@@ -27,42 +27,59 @@ app.use((req, res, next) => {
         "GET, POST, PUT, DELETE, OPTIONS"
     );
 
-    if (req.method === "OPTIONS") {
-        return res.sendStatus(200);
-    }
-
     next();
 
 });
 
 
-// JSON
-app.use(express.json());
+// HANDLE PREFLIGHT REQUESTS
+app.options("*", (req, res) => {
 
+    res.sendStatus(200);
 
-// MongoDB Connection
-mongoose.connect(process.env.MONGO_URI)
-.then(() => {
-    console.log("MongoDB Connected");
-})
-.catch((err) => {
-    console.log(err);
 });
 
 
-// AUTH ROUTES
-app.use("/api/auth", require("./routes/authRoutes"));
+// ================= JSON =================
+app.use(express.json());
 
 
-// PROJECT ROUTES
-app.use("/api/projects", projectRoutes);
+// ================= MONGODB CONNECTION =================
+mongoose.connect(process.env.MONGO_URI)
+.then(() => {
+
+    console.log("MongoDB Connected");
+
+})
+.catch((err) => {
+
+    console.log(err);
+
+});
 
 
-// TASK ROUTES
-app.use("/api/tasks", require("./routes/taskRoutes"));
+// ================= AUTH ROUTES =================
+app.use(
+    "/api/auth",
+    require("./routes/authRoutes")
+);
 
 
-// HOME ROUTE
+// ================= PROJECT ROUTES =================
+app.use(
+    "/api/projects",
+    projectRoutes
+);
+
+
+// ================= TASK ROUTES =================
+app.use(
+    "/api/tasks",
+    require("./routes/taskRoutes")
+);
+
+
+// ================= HOME ROUTE =================
 app.get("/", (req, res) => {
 
     res.json({
@@ -72,24 +89,30 @@ app.get("/", (req, res) => {
 });
 
 
-// PROTECTED ROUTE
-app.get("/protected", authMiddleware, (req, res) => {
+// ================= PROTECTED ROUTE =================
+app.get(
+    "/protected",
+    authMiddleware,
+    (req, res) => {
 
-    res.json({
-        message: "Protected Route Accessed",
-        user: req.user
-    });
+        res.json({
+            message: "Protected Route Accessed",
+            user: req.user
+        });
 
-});
+    }
+);
 
 
-// PORT
+// ================= PORT =================
 const PORT = process.env.PORT || 8080;
 
 
-// SERVER
+// ================= SERVER =================
 app.listen(PORT, () => {
 
-    console.log(`Server running on port ${PORT}`);
+    console.log(
+        `Server running on port ${PORT}`
+    );
 
 });
