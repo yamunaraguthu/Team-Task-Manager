@@ -15,13 +15,21 @@ function Signup() {
 
         try {
 
+            const API =
+                "https://feisty-mindfulness-production.up.railway.app";
+
             const res = await axios.post(
-                "https://feisty-mindfulness-production.up.railway.app/api/auth/signup",
+                `${API}/api/auth/signup`,
                 {
                     name,
                     email,
                     password,
                     role
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
                 }
             );
 
@@ -31,10 +39,12 @@ function Signup() {
 
         } catch (error) {
 
-            console.log(error.response);
+            console.log(error);
 
             alert(
-                error.response?.data?.message || "Registration Failed"
+                error.response?.data?.message ||
+                error.message ||
+                "Registration Failed"
             );
 
         }
