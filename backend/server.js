@@ -1,15 +1,16 @@
 const express = require("express");
 const mongoose = require("mongoose");
-
 require("dotenv").config();
 
 const app = express();
 
 const projectRoutes = require("./routes/projectRoutes");
+const taskRoutes = require("./routes/taskRoutes");
+const authRoutes = require("./routes/authRoutes");
 const authMiddleware = require("./middleware/authMiddleware");
 
 
-// ================= MANUAL CORS FIX =================
+// ================= CORS FIX =================
 app.use((req, res, next) => {
 
     res.header(
@@ -27,15 +28,12 @@ app.use((req, res, next) => {
         "GET, POST, PUT, DELETE, OPTIONS"
     );
 
+    // IMPORTANT
+    if (req.method === "OPTIONS") {
+        return res.sendStatus(200);
+    }
+
     next();
-
-});
-
-
-// HANDLE PREFLIGHT REQUESTS
-app.options("*", (req, res) => {
-
-    res.sendStatus(200);
 
 });
 
@@ -44,7 +42,7 @@ app.options("*", (req, res) => {
 app.use(express.json());
 
 
-// ================= MONGODB CONNECTION =================
+// ================= MONGODB =================
 mongoose.connect(process.env.MONGO_URI)
 .then(() => {
 
@@ -58,28 +56,15 @@ mongoose.connect(process.env.MONGO_URI)
 });
 
 
-// ================= AUTH ROUTES =================
-app.use(
-    "/api/auth",
-    require("./routes/authRoutes")
-);
+// ================= ROUTES =================
+app.use("/api/auth", authRoutes);
+
+app.use("/api/projects", projectRoutes);
+
+app.use("/api/tasks", taskRoutes);
 
 
-// ================= PROJECT ROUTES =================
-app.use(
-    "/api/projects",
-    projectRoutes
-);
-
-
-// ================= TASK ROUTES =================
-app.use(
-    "/api/tasks",
-    require("./routes/taskRoutes")
-);
-
-
-// ================= HOME ROUTE =================
+// ================= HOME =================
 app.get("/", (req, res) => {
 
     res.json({
@@ -89,7 +74,7 @@ app.get("/", (req, res) => {
 });
 
 
-// ================= PROTECTED ROUTE =================
+// ================= PROTECTED =================
 app.get(
     "/protected",
     authMiddleware,
@@ -104,6 +89,16 @@ app.get(
 );
 
 
+// ================= 404 HANDLER =================
+app.use((req, res) => {
+
+    res.status(404).json({
+        message: "Route Not Found"
+    });
+
+});
+
+
 // ================= PORT =================
 const PORT = process.env.PORT || 8080;
 
@@ -111,8 +106,6 @@ const PORT = process.env.PORT || 8080;
 // ================= SERVER =================
 app.listen(PORT, () => {
 
-    console.log(
-        `Server running on port ${PORT}`
-    );
+    console.log(`Server running on port ${PORT}`);
 
 });
