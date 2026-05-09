@@ -11,11 +11,10 @@ const authMiddleware = require("./middleware/authMiddleware");
 
 
 // CORS
-app.use(cors({
-    origin: "*"
-}));
+app.use(cors());
 
 
+// JSON
 app.use(express.json());
 
 
@@ -43,9 +42,11 @@ app.use("/api/tasks", require("./routes/taskRoutes"));
 
 // HOME ROUTE
 app.get("/", (req, res) => {
+
     res.json({
         message: "Backend Connected Successfully 🚀"
     });
+
 });
 
 
@@ -66,5 +67,7 @@ const PORT = process.env.PORT || 8080;
 
 // SERVER
 app.listen(PORT, () => {
+
     console.log(`Server running on port ${PORT}`);
+
 });
